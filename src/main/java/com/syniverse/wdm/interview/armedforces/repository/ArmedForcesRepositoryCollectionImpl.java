@@ -1,19 +1,25 @@
 package com.syniverse.wdm.interview.armedforces.repository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
-import com.syniverse.wdm.interview.armedforces.dto.Army;
-import com.syniverse.wdm.interview.armedforces.dto.ArmyType;
-import com.syniverse.wdm.interview.armedforces.dto.Unit;
-import com.syniverse.wdm.interview.armedforces.dto.UnitType;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.syniverse.wdm.interview.armedforces.dto.Army;
+import com.syniverse.wdm.interview.armedforces.dto.ArmyType;
+import com.syniverse.wdm.interview.armedforces.dto.Unit;
+import com.syniverse.wdm.interview.armedforces.dto.UnitType;
 
 @Profile("repo-collections")
 @Repository
@@ -101,26 +107,28 @@ public class ArmedForcesRepositoryCollectionImpl implements ArmedForcesRepositor
   @Override
   public Long recruitUnit(final Long armyId, final Unit unit) {
     Army army = this.getArmyById(armyId);
-    if (army.getUnits().size() < MAX_UNIT) {
-      if (army.getType() != unit.getType().getArmyType()) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The unit type is unacceptable in that army");
-      }
-      Unit newUnit = Unit.builder().id(Long.valueOf(army.getMaxUnitId() + 1)).combatPower(unit.getCombatPower())
-          .type(unit.getType()).build();
-      List<Unit> units = new ArrayList<>();
-      units.addAll(army.getUnits());
-      units.add(newUnit);
-      army.setUnits(units);
-      return newUnit.getId();
-    } else {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          "Cannot add more unit. You already have way too many to manage, Sir!");
+    if (army.getUnits().size() == MAX_UNIT) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot add more unit. You already have way too many to manage, Sir!");
     }
+    if (army.getType() != unit.getType().getArmyType()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The unit type is unacceptable in that army");
+    }
+    Unit newUnit = Unit.builder().id(Long.valueOf(this.getNextUnitId(army))).combatPower(unit.getCombatPower()).type(unit.getType()).build();
+    List<Unit> units = new ArrayList<>(army.getUnits());
+    units.add(newUnit);
+    army.setUnits(units);
+    return newUnit.getId();
   }
 
   @Override
   public List<Unit> getUnitsOfArmy(final Long armyId) {
     return getArmyById(armyId).getUnits();
+  }
+
+  @Override
+  public void removeArmy(Long armyId) {
+    // TODO check constraint
+    this.armies.remove(armyId);
   }
 
   private Long getNextArmyId() {

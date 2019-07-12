@@ -18,4 +18,6 @@ public interface ArmedForcesRepository {
   public Long recruitUnit(Long armyId, Unit unit);
 
   public List<Unit> getUnitsOfArmy(Long armyId);
+
+  public void removeArmy(Long armyId);
 }

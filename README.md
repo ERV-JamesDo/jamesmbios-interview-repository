@@ -13,15 +13,15 @@ Please create a set of REST APIs for managing your armed forces which fulfill th
 1.	Fetch armed forces executive summary
 2.	~~Create an army~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
 3.	~~List the summary of all the armies you have~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
-4.	List armies of a given type
-5.	Fetch the army’ details
-6.	Recruit a unit to the army
+4.	~~List armies of a given type~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
+5.	~~Fetch the army’ details~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
+6.	~~Recruit a unit to the army~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
 7.	~~Fetch all units of the army~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
-8.	Fetch all units of the army sorted by combat power descending
-9.	Fetch those units of the army which have combat power 50 or more
-10.	Fetch the unit details
-11.	The given unit killed/destroyed (removed from the army)
-12.	The strongest unit (by combat power) killed/destroyed (removed from the army)
+8.	~~Fetch all units of the army sorted by combat power descending~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
+9.	~~Fetch those units of the army which have combat power 50 or more~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
+10.	~~Fetch the unit details~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
+11.	~~The given unit killed/destroyed (removed from the army)~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
+12.	~~The strongest unit (by combat power) killed/destroyed (removed from the army)~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
 13.	Merge one or more armies into the army identified by ID – this should be an asynchronous API, as merging armies takes between one and two minutes. The state of the armies cannot be modified while armies are being merged.
 
 Constraints
