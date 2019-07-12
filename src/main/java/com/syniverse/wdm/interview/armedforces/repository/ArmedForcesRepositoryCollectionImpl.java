@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class ArmedForcesRepositoryCollectionImpl implements ArmedForcesRepository {
 
   private final Map<Long, Army> armies = new ConcurrentHashMap<>();
+  public static final int MAX_UNIT = 100;
 
   @PostConstruct
   protected void initializeData() {
@@ -99,9 +100,22 @@ public class ArmedForcesRepositoryCollectionImpl implements ArmedForcesRepositor
 
   @Override
   public Long recruitUnit(final Long armyId, final Unit unit) {
-
-    // TODO: implement this
-    throw new UnsupportedOperationException("This API is not implemented yet!");
+    Army army = this.getArmyById(armyId);
+    if (army.getUnits().size() < MAX_UNIT) {
+      if (army.getType() != unit.getType().getArmyType()) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The unit type is unacceptable in that army");
+      }
+      Unit newUnit = Unit.builder().id(Long.valueOf(army.getMaxUnitId() + 1)).combatPower(unit.getCombatPower())
+          .type(unit.getType()).build();
+      List<Unit> units = new ArrayList<>();
+      units.addAll(army.getUnits());
+      units.add(newUnit);
+      army.setUnits(units);
+      return newUnit.getId();
+    } else {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+          "Cannot add more unit. You already have way too many to manage, Sir!");
+    }
   }
 
   @Override
