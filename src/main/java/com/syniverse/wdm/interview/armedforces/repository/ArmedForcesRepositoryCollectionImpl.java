@@ -3,6 +3,7 @@ package com.syniverse.wdm.interview.armedforces.repository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,19 +21,22 @@ import com.syniverse.wdm.interview.armedforces.dto.Army;
 import com.syniverse.wdm.interview.armedforces.dto.ArmyType;
 import com.syniverse.wdm.interview.armedforces.dto.Unit;
 import com.syniverse.wdm.interview.armedforces.dto.UnitType;
+import com.syniverse.wdm.interview.armedforces.view.ArmyDetailsView;
+import com.syniverse.wdm.interview.armedforces.view.ArmySummaryView;
 
 @Profile("repo-collections")
 @Repository
 public class ArmedForcesRepositoryCollectionImpl implements ArmedForcesRepository {
 
   private final Map<Long, Army> armies = new ConcurrentHashMap<>();
+  public static final int MAX_ARMY = 50;
   public static final int MAX_UNIT = 100;
 
   @PostConstruct
   protected void initializeData() {
 
     // @formatter:off
-    this.armies.put(1L,  Army.builder().id(1L).name("North navy").type(ArmyType.NAVY)
+    this.armies.put(1L, Army.builder().id(1L).name("North navy").type(ArmyType.NAVY)
         .units(Arrays.asList(
             Unit.builder().id(1L).combatPower(20L).type(UnitType.CORVETTE).build(),
             Unit.builder().id(2L).combatPower(80L).type(UnitType.AIRCRAFT_CARRIER).build(),
@@ -83,13 +87,14 @@ public class ArmedForcesRepositoryCollectionImpl implements ArmedForcesRepositor
 
   @Override
   public Long createArmy(final Army army) {
-    if (this.armies.size() < 50) {
+    if (this.armies.size() < MAX_ARMY) {
       final Long armyId = getNextArmyId();
       army.setId(armyId);
       this.armies.put(armyId, army);
       return armyId;
     } else {
-      throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Cannot add more armies. You already have way too many to manage, Sir!");
+      throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+          "Cannot add more armies. You already have way too many to manage, Sir!");
     }
   }
 
@@ -101,19 +106,22 @@ public class ArmedForcesRepositoryCollectionImpl implements ArmedForcesRepositor
   @Override
   public Army getArmyById(final Long armyId) {
     return Optional.ofNullable(this.armies.get(armyId))
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hmmm. That army does not seem to exist, Sir!"));
+        .orElseThrow(
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hmmm. That army does not seem to exist, Sir!"));
   }
 
   @Override
   public Long recruitUnit(final Long armyId, final Unit unit) {
     Army army = this.getArmyById(armyId);
     if (army.getUnits().size() == MAX_UNIT) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot add more unit. You already have way too many to manage, Sir!");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+          "Cannot add more unit. You already have way too many to manage, Sir!");
     }
     if (army.getType() != unit.getType().getArmyType()) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The unit type is unacceptable in that army");
     }
-    Unit newUnit = Unit.builder().id(Long.valueOf(this.getNextUnitId(army))).combatPower(unit.getCombatPower()).type(unit.getType()).build();
+    Unit newUnit = Unit.builder().id(Long.valueOf(this.getNextUnitId(army))).combatPower(unit.getCombatPower())
+        .type(unit.getType()).build();
     List<Unit> units = new ArrayList<>(army.getUnits());
     units.add(newUnit);
     army.setUnits(units);
@@ -136,6 +144,53 @@ public class ArmedForcesRepositoryCollectionImpl implements ArmedForcesRepositor
   }
 
   private Long getNextUnitId(final Army army) {
-    return (army.getUnits().isEmpty() ? 0L : Collections.max(army.getUnits().stream().map(Unit::getId).collect(Collectors.toList()))) + 1L;
+    return (army.getUnits().isEmpty() ? 0L
+        : Collections.max(army.getUnits().stream().map(Unit::getId).collect(Collectors.toList()))) + 1L;
+  }
+
+  @Override
+  public ArmySummaryView summary() {
+    List<Army> armies = this.getArmies();
+    List<ArmyType> armyTypes = armies.stream().map(army -> army.getType()).distinct().collect(Collectors.toList());
+    List<UnitType> unitTypes = new ArrayList<>();
+    Iterator<Army> armyIterator = this.armies.values().iterator();
+    Army currentArmy;
+    Army strongestArmy = null;
+    Army weakestArmy = null;
+    Long totalUnit = 0L;
+    Long combatPower = 0L;
+    boolean isFirst = true;
+    while (armyIterator.hasNext()) {
+      currentArmy = armyIterator.next();
+      if (isFirst) {
+        strongestArmy = currentArmy;
+        weakestArmy = currentArmy;
+        isFirst = false;
+      }
+      totalUnit += currentArmy.getUnits().size();
+      combatPower += currentArmy.getPower();
+
+      // Collect the UnitType
+      currentArmy.getUnits().forEach(u -> {
+        if (!unitTypes.contains(u.getType())) {
+          unitTypes.add(u.getType());
+        }
+      });
+
+      if (currentArmy.getPower() > strongestArmy.getPower()) {
+        strongestArmy = currentArmy;
+      }
+      if (currentArmy.getPower() < weakestArmy.getPower()) {
+        weakestArmy = currentArmy;
+      }
+    }
+    return ArmySummaryView.builder()
+        .totalArmy(Long.valueOf(armies.size()))
+        .totalUnit(totalUnit)
+        .armytypes(armyTypes)
+        .unitType(unitTypes)
+        .combatPower(combatPower)
+        .strongestArmy(ArmyDetailsView.fromArmy(strongestArmy))
+        .weakestArmy(ArmyDetailsView.fromArmy(weakestArmy)).build();
   }
 }

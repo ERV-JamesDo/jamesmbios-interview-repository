@@ -13,4 +13,8 @@ public class Army {
   private String name;
   private ArmyType type;
   private List<Unit> units;
+
+  public Long getPower() {
+    return units.stream().mapToLong(Unit::getCombatPower).sum();
+  }
 }

@@ -17,6 +17,7 @@ import com.syniverse.wdm.interview.armedforces.dto.Unit;
 import com.syniverse.wdm.interview.armedforces.repository.ArmedForcesRepository;
 import com.syniverse.wdm.interview.armedforces.view.ArmyDetailsView;
 import com.syniverse.wdm.interview.armedforces.view.ArmyInputView;
+import com.syniverse.wdm.interview.armedforces.view.ArmySummaryView;
 import com.syniverse.wdm.interview.armedforces.view.UnitDetailsView;
 import com.syniverse.wdm.interview.armedforces.view.UnitInputView;
 import io.swagger.annotations.ApiOperation;
@@ -138,6 +139,14 @@ public class ArmedForcesController {
       army.setUnits(units);
     }
     return UnitDetailsView.fromUnit(toBeRemovedUnit.get());
+  }
+
+  @ApiOperation(value = "Fetch armed forces executive summary", notes = "Get summary of the armed forces")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Success", response = ArmySummaryView.class, responseContainer = "List") })
+  @GetMapping("/armies/summary")
+  public ArmySummaryView summary() {
+    return this.armedForcesRepository.summary();
   }
 
 }

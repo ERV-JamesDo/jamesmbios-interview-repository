@@ -6,11 +6,11 @@ Fighting Armies
 =======
 You are a **General** of armed forces of People Republic of Swatemalu. You have **N** armies of **K** types, which are numbered from **1** to **N** under your command. Each army has a name and consists of a number of units of a type that is acceptable in that type of army. Each unit is assigned a number, representative of its combat power. Since, you are responsible for the entire armed forces, you want to give orders to your armies and query them about their current state.
 
-   We have created a Spring Boot project to start you off. We have even implemented some REST APIs for you! :)  
-   Now your turn to show us some awesome code! :)   
+   We have created a Spring Boot project to start you off. We have even implemented some REST APIs for you! :)
+   Now your turn to show us some awesome code! :)
 
 Please create a set of REST APIs for managing your armed forces which fulfill the following requirements:
-1.	Fetch armed forces executive summary
+1.	~~Fetch armed forces executive summary~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
 2.	~~Create an army~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
 3.	~~List the summary of all the armies you have~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
 4.	~~List armies of a given type~~ ![implemented](http://www.myiconfinder.com/uploads/iconsets/16-16-218780527bb8acc76f78fecaca298342.png "implemented")
@@ -42,7 +42,7 @@ Freedom of creativity
 
 Project Setup
 -------
-  Once imported to your IDE - you can start the Spring Boot project. Swagger will become available on your local machine under: http://localhost:9099/swagger-ui.html#/armed-forces-controller.   
+  Once imported to your IDE - you can start the Spring Boot project. Swagger will become available on your local machine under: http://localhost:9099/swagger-ui.html#/armed-forces-controller.
 
 You will need to have [Lombok](https://projectlombok.org/features/all) integrated to your IDE. (instructions for [Eclipse](https://projectlombok.org/setup/eclipse) and [IntelliJ](https://projectlombok.org/setup/intellij))
 

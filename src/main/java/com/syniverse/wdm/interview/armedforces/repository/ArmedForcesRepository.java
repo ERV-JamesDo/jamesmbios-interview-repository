@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.syniverse.wdm.interview.armedforces.dto.Army;
 import com.syniverse.wdm.interview.armedforces.dto.Unit;
+import com.syniverse.wdm.interview.armedforces.view.ArmySummaryView;
+
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -20,4 +22,6 @@ public interface ArmedForcesRepository {
   public List<Unit> getUnitsOfArmy(Long armyId);
 
   public void removeArmy(Long armyId);
+
+  public ArmySummaryView summary();
 }
